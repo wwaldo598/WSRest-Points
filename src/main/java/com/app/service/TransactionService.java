@@ -1,8 +1,9 @@
 package com.app.service;
 
 import java.util.Collection;
-import java.util.Map;
 
+import com.app.model.PointsMonth;
+import com.app.model.PointsTotal;
 import com.app.model.Transaction;
 
 public interface TransactionService {
@@ -11,6 +12,6 @@ public interface TransactionService {
 	public abstract void deleteTransaction(String id);
 	public abstract Collection<Transaction> getTransactions();
 	
-	public abstract Map<Integer, Long> getRewardedPointMonth(String customer);
-	public abstract int getRewardedPointTotal(String customer);
+	public abstract PointsMonth getPointsMonth(String customer);
+	public abstract PointsTotal getPointsTotal(String customer);
 }

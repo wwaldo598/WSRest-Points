@@ -43,4 +43,14 @@ public class TransactionServiceController {
 	      return new ResponseEntity<>("Transaction is created successfully", HttpStatus.CREATED);
 	   }
 	   
+	   @RequestMapping(value = "/points/month/{customer}", method = RequestMethod.GET)
+	   public ResponseEntity<Object> getPointsMonth(@PathVariable("customer") String customer) {		   
+		   return new ResponseEntity<>(transactionService.getPointsMonth(customer), HttpStatus.OK);
+	   }
+	   
+	   @RequestMapping(value = "/points/total/{customer}", method = RequestMethod.GET)
+	   public ResponseEntity<Object> getPointsTotal(@PathVariable("customer") String customer) {		   
+		   return new ResponseEntity<>(transactionService.getPointsTotal(customer), HttpStatus.OK);
+	   }
+	   
 }
