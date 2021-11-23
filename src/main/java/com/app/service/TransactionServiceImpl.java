@@ -5,38 +5,77 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.app.constant.Constants;
+import com.app.constant.MessageCodes;
+import com.app.enums.ErrorCodes;
+import com.app.model.MessageCode;
 import com.app.model.Point;
 import com.app.model.PointsMonth;
 import com.app.model.PointsTotal;
 import com.app.model.Transaction;
-import com.app.tools.Tools;
+import com.app.util.Util;
 
 @Service
 public class TransactionServiceImpl implements TransactionService{
 
 	private static Map<String, Transaction> transactionRepo = new HashMap<>();
-	
+
 	@Override
-	public void createTransaction(Transaction transaction) {
-		transactionRepo.put(transaction.getId(), transaction);
+	public MessageCode createTransaction(Transaction transaction) {
+		MessageCode messageCode = new MessageCode();
+		Util util = new Util();		
+		util.validateParameters(transaction);
+		if (util.getMessageCode().getCode() == MessageCodes.MESS_CODE_SUCCESSFULL){				
+			
+			if (transactionRepo.containsKey(transaction.getId())) {
+			    messageCode.setCode(ErrorCodes.ERR_PARAM_TRANSACTION_ALREADY_EXIST.getCode());
+			    messageCode.setDescription(ErrorCodes.ERR_PARAM_TRANSACTION_ALREADY_EXIST.getDescription());
+			}else {
+				transactionRepo.put(transaction.getId(), transaction);
+			    messageCode.setCode(MessageCodes.MESS_CODE_SUCCESSFULL);
+			    messageCode.setDescription(MessageCodes.MESS_TRANSACTION_CREATED);
+			}
+			
+		}else {
+		    messageCode.setCode(util.getMessageCode().getCode());
+		    messageCode.setDescription(util.getMessageCode().getDescription());
+		}
+
+		return messageCode;
 	}
 
 	@Override
-	public void updateTransaction(String id, Transaction transaction) {
-		transactionRepo.remove(id);
-		transaction.setId(id);
-	    transactionRepo.put(id, transaction);		
+	public MessageCode updateTransaction(String id, Transaction transaction) {
+		MessageCode messageCode = new MessageCode();
+		if (transactionRepo.containsKey(id)) {
+			transactionRepo.remove(id);
+			transaction.setId(id);
+		    transactionRepo.put(id, transaction);
+		    messageCode.setCode(MessageCodes.MESS_CODE_SUCCESSFULL);
+		    messageCode.setDescription(MessageCodes.MESS_TRANSACTION_UPDATED);
+		}else {
+		    messageCode.setCode(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getCode());
+		    messageCode.setDescription(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getDescription());
+		}
+		return messageCode;
 	}
 
 	@Override
-	public void deleteTransaction(String id) {
-		transactionRepo.remove(id);
+	public MessageCode deleteTransaction(String id) {
+		MessageCode messageCode = new MessageCode();		
+			if (transactionRepo.containsKey(id)) {
+				transactionRepo.remove(id);
+			    messageCode.setCode(MessageCodes.MESS_CODE_SUCCESSFULL);
+			    messageCode.setDescription(MessageCodes.MESS_TRANSACTION_DELETED);
+			}else{
+			    messageCode.setCode(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getCode());
+			    messageCode.setDescription(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getDescription());
+			}
+		return messageCode;
 	}
 
 	@Override
@@ -49,7 +88,7 @@ public class TransactionServiceImpl implements TransactionService{
 		List<Point> listPoints = new ArrayList<>();
 		transactionRepo.forEach((k,v)->{
 			if (v.getCustomer().equals(customer))
-				listPoints.add(new Point(Tools.getMonth(v.getPurchaseDate()),
+				listPoints.add(new Point(Util.getMonth(v.getPurchaseDate()),
 										 getEarnedPoints(v.getPurchaseAmmount())));
 		});		
 		
@@ -80,10 +119,13 @@ public class TransactionServiceImpl implements TransactionService{
 	 */
 	private int getEarnedPoints(double purchaseAmmount){
 		int earnedPoints = 0;
-		if (purchaseAmmount > Constants.C_AMMOUNT_POINTS_2 && purchaseAmmount <= (Constants.C_AMMOUNT_POINTS_2 * 2))
+		if (purchaseAmmount > (Constants.C_AMMOUNT_POINTS_2 * 2)) 
+			earnedPoints = (int) (Constants.C_AMMOUNT_POINTS_1 * Constants.C_EARNED_POINTS_1) +
+						   		 (Constants.C_AMMOUNT_POINTS_2 * Constants.C_EARNED_POINTS_2);		
+		else if (purchaseAmmount > Constants.C_AMMOUNT_POINTS_2 && purchaseAmmount <= (Constants.C_AMMOUNT_POINTS_2 * 2))
 			earnedPoints = (int) ((Constants.C_AMMOUNT_POINTS_1 * Constants.C_EARNED_POINTS_1) + 
 			          	   ((purchaseAmmount - Constants.C_AMMOUNT_POINTS_2 ) * Constants.C_EARNED_POINTS_2));
-		else if (purchaseAmmount > Constants.C_AMMOUNT_POINTS_1 && purchaseAmmount <= Constants.C_AMMOUNT_POINTS_1)
+		else if (purchaseAmmount > Constants.C_AMMOUNT_POINTS_1 && purchaseAmmount <= Constants.C_AMMOUNT_POINTS_2)
 			earnedPoints = (int) ((purchaseAmmount - Constants.C_AMMOUNT_POINTS_1 ) * Constants.C_EARNED_POINTS_1);
 		return earnedPoints;
 	}
