@@ -2,7 +2,6 @@ package com.app.util;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import com.app.enums.ErrorCodes;
 import com.app.model.MessageCode;
