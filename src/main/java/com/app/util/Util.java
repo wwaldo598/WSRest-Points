@@ -3,6 +3,8 @@ package com.app.util;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+
 import com.app.enums.ErrorCodes;
 import com.app.model.MessageCode;
 import com.app.model.Transaction;
@@ -24,17 +26,21 @@ public class Util {
 	public void validateParameters(Transaction transaction){
 		messageCode = new MessageCode();
 		if (!isValidValue(Optional.ofNullable(transaction.getId())) || transaction.getId().trim().equals("")){
+			messageCode.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageCode.setCode(ErrorCodes.ERR_PARAM_TRANSACTION_REQUIRED.getCode());
-			messageCode.setDescription(ErrorCodes.ERR_PARAM_TRANSACTION_REQUIRED.getDescription());
+			messageCode.setMessage(ErrorCodes.ERR_PARAM_TRANSACTION_REQUIRED.getDescription());
 		}else if (!isValidValue(Optional.ofNullable(transaction.getCustomer())) ||  transaction.getCustomer().trim().equals("")){
+			messageCode.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageCode.setCode(ErrorCodes.ERR_PARAM_CUSTOMER_REQUIRED.getCode());
-			messageCode.setDescription(ErrorCodes.ERR_PARAM_CUSTOMER_REQUIRED.getDescription());
+			messageCode.setMessage(ErrorCodes.ERR_PARAM_CUSTOMER_REQUIRED.getDescription());
 		}else if (!isValidValue(Optional.ofNullable(transaction.getPurchaseDate()))){
+			messageCode.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageCode.setCode(ErrorCodes.ERR_PARAM_PURCHASE_DATE_REQUIRED.getCode());
-			messageCode.setDescription(ErrorCodes.ERR_PARAM_PURCHASE_DATE_REQUIRED.getDescription());
+			messageCode.setMessage(ErrorCodes.ERR_PARAM_PURCHASE_DATE_REQUIRED.getDescription());
 		}else if (transaction.getPurchaseAmmount()==0) {
+			messageCode.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageCode.setCode(ErrorCodes.ERR_PARAM_PURCHASE_AMMOUNT_REQUIRED.getCode());
-			messageCode.setDescription(ErrorCodes.ERR_PARAM_PURCHASE_AMMOUNT_REQUIRED.getDescription());
+			messageCode.setMessage(ErrorCodes.ERR_PARAM_PURCHASE_AMMOUNT_REQUIRED.getDescription());
 		}
 	}
 

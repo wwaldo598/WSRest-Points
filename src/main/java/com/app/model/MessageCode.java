@@ -2,21 +2,32 @@ package com.app.model;
 
 public class MessageCode {
 
+	private Integer status;
 	private Integer code;
-	private String  description;
+	private String  message;
 		
 	public MessageCode() {
 		super();
+		this.status = 0;
 		this.code = 0;
-		this.description = "";
+		this.message = "";
 	}
 	
-	public MessageCode(Integer code, String description) {
+	public MessageCode(Integer status, Integer code, String message) {
 		super();
+		this.status = status;
 		this.code = code;
-		this.description = description;
+		this.message = message;
 	}
 	
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	/**
 	 * @return the code
 	 */
@@ -30,16 +41,16 @@ public class MessageCode {
 		this.code = code;
 	}
 	/**
-	 * @return the description
+	 * @return the message
 	 */
-	public String getDescription() {
-		return description;
+	public String getMessage() {
+		return message;
 	}
 	/**
-	 * @param description the description to set
+	 * @param the message to set
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	
 }

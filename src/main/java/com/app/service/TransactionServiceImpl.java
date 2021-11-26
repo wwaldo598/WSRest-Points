@@ -9,12 +9,16 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.app.constant.Constants;
 import com.app.constant.MessageCodes;
-import com.app.controller.TransactionServiceController;
 import com.app.enums.ErrorCodes;
+import com.app.exception.CustomerNotFoundException;
+import com.app.exception.ParameterInvalidException;
+import com.app.exception.TransactionExistException;
+import com.app.exception.TransactionNotFoundException;
 import com.app.model.MessageCode;
 import com.app.model.Point;
 import com.app.model.PointsMonth;
@@ -42,25 +46,24 @@ public class TransactionServiceImpl implements TransactionService{
 	
 			if (util.getMessageCode().getCode() == MessageCodes.MESS_CODE_SUCCESSFULL){				
 				LOGGER.debug("Validating if exist the transaction");	
-				if (transactionRepo.containsKey(transaction.getId())) {
-					LOGGER.debug("Exist the transaction. Doesn't create the transaction.");
-				    messageCode.setCode(ErrorCodes.ERR_PARAM_TRANSACTION_ALREADY_EXIST.getCode());
-				    messageCode.setDescription(ErrorCodes.ERR_PARAM_TRANSACTION_ALREADY_EXIST.getDescription());
-				}else {
-					LOGGER.debug("Doesn't exist the transaction. Creating the transaction.");
+				if (transactionRepo.containsKey(transaction.getId()))
+					throw new TransactionExistException (ErrorCodes.ERR_TRANSACTION_ALREADY_EXIST.getDescription() + " : " + transaction.getId());
+				else {
 					transactionRepo.put(transaction.getId(), transaction);
-				    messageCode.setCode(MessageCodes.MESS_CODE_SUCCESSFULL);
-				    messageCode.setDescription(MessageCodes.MESS_TRANSACTION_CREATED);
+					messageCode.setStatus (HttpStatus.CREATED.value());
+					messageCode.setCode   (MessageCodes.MESS_CODE_SUCCESSFULL);
+				    messageCode.setMessage(MessageCodes.MESS_TRANSACTION_CREATED);
 				}
 				
-			}else {
-			    messageCode.setCode(util.getMessageCode().getCode());
-			    messageCode.setDescription(util.getMessageCode().getDescription());
-			}
-		}catch (Exception ex) {
-			LOGGER.error(ex.getMessage());
-		    messageCode.setCode(ErrorCodes.ERR_SERVER_INTERNAL.getCode());
-		    messageCode.setDescription(ErrorCodes.ERR_SERVER_INTERNAL.getDescription());
+			}else 
+				throw new ParameterInvalidException (util.getMessageCode().getCode(), util.getMessageCode().getMessage());
+			
+		}catch (TransactionExistException ex){
+			throw ex;
+		}catch (ParameterInvalidException ex){
+			throw ex;
+		}catch (Exception ex){	
+			LOGGER.error(ex.getMessage(), ex);
 		}
 		return messageCode;
 	}
@@ -76,17 +79,15 @@ public class TransactionServiceImpl implements TransactionService{
 				transactionRepo.remove(id);
 				transaction.setId(id);
 			    transactionRepo.put(id, transaction);
-			    messageCode.setCode(MessageCodes.MESS_CODE_SUCCESSFULL);
-			    messageCode.setDescription(MessageCodes.MESS_TRANSACTION_UPDATED);
-			}else{
-				LOGGER.debug("It doesn't exist the transaction");
-			    messageCode.setCode(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getCode());
-			    messageCode.setDescription(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getDescription());
-			}			
+			    messageCode.setStatus (HttpStatus.OK.value());
+			    messageCode.setCode   (MessageCodes.MESS_CODE_SUCCESSFULL);
+			    messageCode.setMessage(MessageCodes.MESS_TRANSACTION_UPDATED);
+			}else
+				throw new TransactionNotFoundException (ErrorCodes.ERR_TRANSACTION_NOT_EXIST.getDescription() + " : " + id);
+		}catch (TransactionNotFoundException ex) {
+			throw ex;
 		}catch (Exception ex) {
-			LOGGER.error(ex.getMessage());
-		    messageCode.setCode(ErrorCodes.ERR_SERVER_INTERNAL.getCode());
-		    messageCode.setDescription(ErrorCodes.ERR_SERVER_INTERNAL.getDescription());
+			LOGGER.error(ex.getMessage(), ex);
 		}
 		return messageCode;
 	}
@@ -100,17 +101,16 @@ public class TransactionServiceImpl implements TransactionService{
 			if (transactionRepo.containsKey(id)) {
 				transactionRepo.remove(id);
 				LOGGER.debug("Exist the transaction. Deleting the transaction.");
+				messageCode.setStatus(HttpStatus.OK.value());
 			    messageCode.setCode(MessageCodes.MESS_CODE_SUCCESSFULL);
-			    messageCode.setDescription(MessageCodes.MESS_TRANSACTION_DELETED);
-			}else{
-				LOGGER.debug("It doesn't exist the transaction");
-			    messageCode.setCode(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getCode());
-			    messageCode.setDescription(ErrorCodes.ERR_PARAM_TRANSACTION_NOT_EXIST.getDescription());
-			}
+			    messageCode.setMessage(MessageCodes.MESS_TRANSACTION_DELETED);
+			}else
+				throw new TransactionNotFoundException (ErrorCodes.ERR_TRANSACTION_NOT_EXIST.getDescription() + " : " + id);
+		
+		}catch (TransactionNotFoundException ex) {
+			throw ex;
 		}catch(Exception ex) {
-			LOGGER.error(ex.getMessage());
-		    messageCode.setCode(ErrorCodes.ERR_SERVER_INTERNAL.getCode());
-		    messageCode.setDescription(ErrorCodes.ERR_SERVER_INTERNAL.getDescription());
+			LOGGER.error(ex.getMessage(), ex);
 		}
 		return messageCode;
 	}
@@ -126,21 +126,31 @@ public class TransactionServiceImpl implements TransactionService{
 	public PointsMonth getPointsMonth(String customer) {	
 		LOGGER.info("Getting points-month");
 		List<Point> listPoints = new ArrayList<>();
-		transactionRepo.forEach((k,v)->{
-			if (v.getCustomer().equals(customer))
-				listPoints.add(new Point(Util.getMonth(v.getPurchaseDate()),
-										 getEarnedPoints(v.getPurchaseAmmount())));
-		});		
+		PointsMonth collPointsMonth = new PointsMonth();		
+		try {
+			long totalCustomer = transactionRepo.values().stream().filter((p)->p.getCustomer().equals(customer)).count();
+			if (totalCustomer == 0){
+				throw new CustomerNotFoundException (ErrorCodes.ERR_CUSTOMER_NOT_EXIST.getDescription() + " : " + customer);
+			}else{
+				transactionRepo.forEach((k,v)->{
+					if (v.getCustomer().equals(customer))
+						listPoints.add(new Point(Util.getMonth(v.getPurchaseDate()),
+												 getEarnedPoints(v.getPurchaseAmmount())));
+				});		
+				
+				Map<Integer, Integer> ponintsMonth =
+						listPoints.stream().collect(Collectors.groupingBy(Point::getMonth, Collectors.summingInt(Point::getPoints)));
 		
-		Map<Integer, Integer> ponintsMonth =
-				listPoints.stream().collect(Collectors.groupingBy(Point::getMonth, Collectors.summingInt(Point::getPoints)));
-
-		PointsMonth collPointsMonth = new PointsMonth();
-		collPointsMonth.setCustomer(customer);
-		ponintsMonth.forEach((k,v)->collPointsMonth.addPoints(new Point(k,v)));
-		
-		LOGGER.debug("Points calculated " + collPointsMonth.toString());
-		
+				collPointsMonth.setCustomer(customer);
+				ponintsMonth.forEach((k,v)->collPointsMonth.addPoints(new Point(k,v)));
+				
+				LOGGER.debug("Points calculated " + collPointsMonth.toString());
+			}
+		}catch (CustomerNotFoundException ex) {
+			throw ex;
+		}catch (Exception ex) {
+			LOGGER.error(ex.getMessage(), ex);
+		}
 		return collPointsMonth;
 		}
 
@@ -148,13 +158,25 @@ public class TransactionServiceImpl implements TransactionService{
 	public PointsTotal getPointsTotal(String customer) {
 		LOGGER.info("Getting points-total");
 		PointsTotal pointsTotal = new PointsTotal();
-		int points = transactionRepo.values().stream()
-									.filter((p)->p.getCustomer().equals(customer))
-									.map((v)->getEarnedPoints(v.getPurchaseAmmount()))
-									.reduce(0, Integer::sum);
-		pointsTotal.setCustomer(customer);
-		pointsTotal.setPoints(points);
-		LOGGER.debug("Points calculated " + pointsTotal.toString()); 
+		try {
+			
+			long totalCustomer = transactionRepo.values().stream().filter((p)->p.getCustomer().equals(customer)).count();
+			if (totalCustomer == 0){
+				throw new CustomerNotFoundException (ErrorCodes.ERR_CUSTOMER_NOT_EXIST.getDescription() + " : " + customer);
+			}else {
+				int points = transactionRepo.values().stream()
+											.filter((p)->p.getCustomer().equals(customer))
+											.map((v)->getEarnedPoints(v.getPurchaseAmmount()))
+											.reduce(0, Integer::sum);
+				pointsTotal.setCustomer(customer);
+				pointsTotal.setPoints(points);
+				LOGGER.debug("Points calculated " + pointsTotal.toString()); 
+			}
+		}catch (CustomerNotFoundException ex) {
+			throw ex;
+		}catch (Exception ex) {
+			LOGGER.error(ex.getMessage(), ex);		
+		}
 		return pointsTotal;
 	}
 
