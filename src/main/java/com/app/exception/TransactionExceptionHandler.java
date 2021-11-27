@@ -19,11 +19,11 @@ public class TransactionExceptionHandler {
 	@ExceptionHandler
 	public ResponseEntity<MessageCode> handleException(TransactionNotFoundException ex){
 		MessageCode errorResponse = new MessageCode();
-		errorResponse.setStatus (HttpStatus.NOT_FOUND.value());
+		errorResponse.setStatus (HttpStatus.NO_CONTENT.value());
 		errorResponse.setCode   (ErrorCodes.ERR_TRANSACTION_ALREADY_EXIST.getCode());
 		errorResponse.setMessage(ex.getMessage());
 		LOGGER.error(ex.getMessage());
-		return new ResponseEntity<MessageCode>(errorResponse, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<MessageCode>(errorResponse, HttpStatus.NO_CONTENT);
 		
 	}
 
@@ -70,10 +70,10 @@ public class TransactionExceptionHandler {
 	@ExceptionHandler
 	public ResponseEntity<MessageCode> handleException(CustomerNotFoundException ex){
 		MessageCode errorResponse = new MessageCode();
-		errorResponse.setStatus (HttpStatus.NOT_FOUND.value());
+		errorResponse.setStatus (HttpStatus.NO_CONTENT.value());
 		errorResponse.setCode   (ErrorCodes.ERR_CUSTOMER_NOT_EXIST.getCode());
 		errorResponse.setMessage(ex.getMessage());
 		LOGGER.error(ex.getMessage());
-		return new ResponseEntity<MessageCode>(errorResponse, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<MessageCode>(errorResponse, HttpStatus.NO_CONTENT);
 	}
 }

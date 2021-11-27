@@ -14,6 +14,15 @@ public class Transaction {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate purchaseDate;
 	
+	
+	public Transaction(String id, String customer, double purchaseAmmount, LocalDate purchaseDate) {
+		super();
+		this.id = id;
+		this.customer = customer;
+		this.purchaseAmmount = purchaseAmmount;
+		this.purchaseDate = purchaseDate;
+	}
+
 	public Transaction() {
 		super();
 	}
@@ -65,6 +74,49 @@ public class Transaction {
 	 */
 	public void setPorchaseDate(LocalDate porchaseDate) {
 		this.purchaseDate = porchaseDate;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((customer == null) ? 0 : customer.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(purchaseAmmount);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((purchaseDate == null) ? 0 : purchaseDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Transaction other = (Transaction) obj;
+		if (customer == null) {
+			if (other.customer != null)
+				return false;
+		} else if (!customer.equals(other.customer))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (Double.doubleToLongBits(purchaseAmmount) != Double.doubleToLongBits(other.purchaseAmmount))
+			return false;
+		if (purchaseDate == null) {
+			if (other.purchaseDate != null)
+				return false;
+		} else if (!purchaseDate.equals(other.purchaseDate))
+			return false;
+		return true;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package com.app.util;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -14,8 +13,17 @@ import com.app.model.Transaction;
 public class Util {
 
 	private MessageCode messageCode = null;
-	
 
+	/**
+	 * @param value The string value to turn into LocalDate
+	 * @return The value turned into.
+	 */
+    public static LocalDate getLocalDateFromString (String value) {
+	    String dateTimePattern = "dd-MM-yyyy";
+	  	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
+	  	LocalDate localDate = LocalDate.parse(value, dateFormatter);
+	  	return localDate;
+    } 
 	
 	/**
 	 * @return the month of purchase-date of date-format "dd-mm-yyyy".
