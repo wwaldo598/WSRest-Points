@@ -2,13 +2,16 @@ package com.app.model;
 
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 public class Transaction {
 	private String id;
 	private String customer;
 	private double purchaseAmmount;
 	
-	@JsonFormat(pattern="dd-MM-yyyy")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate purchaseDate;
 	
 	public Transaction() {
