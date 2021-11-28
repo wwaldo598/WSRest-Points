@@ -145,7 +145,7 @@ public class TransactionServiceImpl implements TransactionService{
 				transactionRepo.forEach((k,v)->{
 					if (v.getCustomer().equals(customer))
 						listPoints.add(new Point(Util.getMonth(v.getPurchaseDate()),
-												 getEarnedPoints(v.getPurchaseAmmount())));
+												 getEarnedPoints(v.getPurchaseAmount())));
 				});		
 				
 				Map<Integer, Integer> ponintsMonth =
@@ -176,7 +176,7 @@ public class TransactionServiceImpl implements TransactionService{
 			}else {
 				int points = transactionRepo.values().stream()
 											.filter((p)->p.getCustomer().equals(customer))
-											.map((v)->getEarnedPoints(v.getPurchaseAmmount()))
+											.map((v)->getEarnedPoints(v.getPurchaseAmount()))
 											.reduce(0, Integer::sum);
 				pointsTotal.setCustomer(customer);
 				pointsTotal.setPoints(points);
@@ -193,16 +193,16 @@ public class TransactionServiceImpl implements TransactionService{
 	/**
 	 * @return the total of earned points.
 	 */
-	private int getEarnedPoints(double purchaseAmmount){
+	private int getEarnedPoints(double purchaseAmount){
 		int earnedPoints = 0;
-		if (purchaseAmmount > (Constants.C_AMMOUNT_POINTS_2 * 2)) 
-			earnedPoints = (int) (Constants.C_AMMOUNT_POINTS_1 * Constants.C_EARNED_POINTS_1) +
-						   		 (Constants.C_AMMOUNT_POINTS_2 * Constants.C_EARNED_POINTS_2);		
-		else if (purchaseAmmount > Constants.C_AMMOUNT_POINTS_2 && purchaseAmmount <= (Constants.C_AMMOUNT_POINTS_2 * 2))
-			earnedPoints = (int) ((Constants.C_AMMOUNT_POINTS_1 * Constants.C_EARNED_POINTS_1) + 
-			          	   ((purchaseAmmount - Constants.C_AMMOUNT_POINTS_2 ) * Constants.C_EARNED_POINTS_2));
-		else if (purchaseAmmount > Constants.C_AMMOUNT_POINTS_1 && purchaseAmmount <= Constants.C_AMMOUNT_POINTS_2)
-			earnedPoints = (int) ((purchaseAmmount - Constants.C_AMMOUNT_POINTS_1 ) * Constants.C_EARNED_POINTS_1);
+		if (purchaseAmount > (Constants.C_AMOUNT_POINTS_2 * 2)) 
+			earnedPoints = (int) (Constants.C_AMOUNT_POINTS_1 * Constants.C_EARNED_POINTS_1) +
+						   		 (Constants.C_AMOUNT_POINTS_2 * Constants.C_EARNED_POINTS_2);		
+		else if (purchaseAmount > Constants.C_AMOUNT_POINTS_2 && purchaseAmount <= (Constants.C_AMOUNT_POINTS_2 * 2))
+			earnedPoints = (int) ((Constants.C_AMOUNT_POINTS_1 * Constants.C_EARNED_POINTS_1) + 
+			          	   ((purchaseAmount - Constants.C_AMOUNT_POINTS_2 ) * Constants.C_EARNED_POINTS_2));
+		else if (purchaseAmount > Constants.C_AMOUNT_POINTS_1 && purchaseAmount <= Constants.C_AMOUNT_POINTS_2)
+			earnedPoints = (int) ((purchaseAmount - Constants.C_AMOUNT_POINTS_1 ) * Constants.C_EARNED_POINTS_1);
 		return earnedPoints;
 	}
 	

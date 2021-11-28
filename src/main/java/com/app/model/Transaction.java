@@ -8,18 +8,18 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 public class Transaction {
 	private String id;
 	private String customer;
-	private double purchaseAmmount;
+	private double purchaseAmount;
 	
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate purchaseDate;
 	
 	
-	public Transaction(String id, String customer, double purchaseAmmount, LocalDate purchaseDate) {
+	public Transaction(String id, String customer, double purchaseAmount, LocalDate purchaseDate) {
 		super();
 		this.id = id;
 		this.customer = customer;
-		this.purchaseAmmount = purchaseAmmount;
+		this.purchaseAmount = purchaseAmount;
 		this.purchaseDate = purchaseDate;
 	}
 
@@ -52,16 +52,16 @@ public class Transaction {
 		this.customer = customer;
 	}
 	/**
-	 * @return the purchaseAmmount
+	 * @return the purchaseAmount
 	 */
-	public double getPurchaseAmmount() {
-		return purchaseAmmount;
+	public double getPurchaseAmount() {
+		return purchaseAmount;
 	}
 	/**
-	 * @param purchaseAmmount the purchaseAmmount to set
+	 * @param purchaseAmount the purchaseAmount to set
 	 */
-	public void setPurchaseAmmount(double purchaseAmmount) {
-		this.purchaseAmmount = purchaseAmmount;
+	public void setPurchaseAmount(double purchaseAmount) {
+		this.purchaseAmount = purchaseAmount;
 	}
 	/**
 	 * @return the porchaseDate
@@ -84,7 +84,7 @@ public class Transaction {
 		result = prime * result + ((customer == null) ? 0 : customer.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		long temp;
-		temp = Double.doubleToLongBits(purchaseAmmount);
+		temp = Double.doubleToLongBits(purchaseAmount);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((purchaseDate == null) ? 0 : purchaseDate.hashCode());
 		return result;
@@ -109,7 +109,7 @@ public class Transaction {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (Double.doubleToLongBits(purchaseAmmount) != Double.doubleToLongBits(other.purchaseAmmount))
+		if (Double.doubleToLongBits(purchaseAmount) != Double.doubleToLongBits(other.purchaseAmount))
 			return false;
 		if (purchaseDate == null) {
 			if (other.purchaseDate != null)
@@ -121,7 +121,7 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return "Transaction [id=" + id + ", customer=" + customer + ", purchaseAmmount=" + purchaseAmmount
+		return "Transaction [id=" + id + ", customer=" + customer + ", purchaseAmount=" + purchaseAmount
 				+ ", purchaseDate=" + purchaseDate + "]";
 	}
 	

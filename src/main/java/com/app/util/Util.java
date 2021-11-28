@@ -49,10 +49,10 @@ public class Util {
 			messageCode.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageCode.setCode(ErrorCodes.ERR_PARAM_PURCHASE_DATE_REQUIRED.getCode());
 			messageCode.setMessage(ErrorCodes.ERR_PARAM_PURCHASE_DATE_REQUIRED.getDescription());
-		}else if (transaction.getPurchaseAmmount()==0) {
+		}else if (transaction.getPurchaseAmount()==0) {
 			messageCode.setStatus(HttpStatus.BAD_REQUEST.value());
-			messageCode.setCode(ErrorCodes.ERR_PARAM_PURCHASE_AMMOUNT_REQUIRED.getCode());
-			messageCode.setMessage(ErrorCodes.ERR_PARAM_PURCHASE_AMMOUNT_REQUIRED.getDescription());
+			messageCode.setCode(ErrorCodes.ERR_PARAM_PURCHASE_AMOUNT_REQUIRED.getCode());
+			messageCode.setMessage(ErrorCodes.ERR_PARAM_PURCHASE_AMOUNT_REQUIRED.getDescription());
 		}
 	}
 
