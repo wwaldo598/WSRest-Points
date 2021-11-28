@@ -47,11 +47,102 @@ In case of omitting any values or if the format of the value does not correspond
 
 In case of success would return a status **201**, a code **0** and the message **"The transaction was successfully created"**. If the transaction to record already exist, the WS would return a status **400**, a code **-8** and the message **"The entered transaction already exist"**.
 
-______ 
-**HTTP METHOD: GET**
-**URL: /pointsAppWS/transaction**
+In order to consume the URL **/pointAppWs/transaction** we can use the **curl** application. In this case the Rest WS was deployed locally and listening by the default port **8080**.
 
-This endpoint is responsible of consulting the transactions that were recorded in before operations. In case of no exist any transactions the service would return an error indicating it.
+`curl -v -d "{\"id\":19,\"customer\":\"Client-1\", \"purchaseAmount\": 100, \"purchaseDate\": \"12-10-2021\"}"   -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction`
+
+The response of the before request is the following:
+	   
+`POST /pointsAppWS/transaction HTTP/1.1`\
+ `Host: localhost:8080`\
+ `User-Agent: curl/7.55.1`\
+ `Accept: */*`\
+ `Content-Type: application/json`\
+ `Content-Length: 84`
+
+ `upload completely sent off: 84 out of 84 bytes`\
+ `HTTP/1.1 201`\
+ `Content-Type: application/json`\
+ `Transfer-Encoding: chunked`\
+`Date: Sun, 28 Nov 2021 17:56:57 GMT`
+
+`{"status":201,"code":0,"message":"The transaction was successfully created"}`
+
+The following execution, the parameter **id** is missing so that a message error will be returned.
+
+`curl -v -d "{\"customer\":\"Client-1\", \"purchaseAmount\": 100, \"purchaseDate\": \"12-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction`
+
+`POST /pointsAppWS/transaction HTTP/1.1`\
+`Host: localhost:8080`\
+`User-Agent: curl/7.55.1`\
+`Accept: */*`\
+`Content-Type: application/json`\
+`Content-Length: 76`
+
+`upload completely sent off: 76 out of 76 bytes`\
+`HTTP/1.1 400`\
+`Content-Type: application/json`\
+`Transfer-Encoding: chunked`\
+`Date: Sun, 28 Nov 2021 18:45:00 GMT`\
+`Connection: close`
+
+`{"status":400,"code":-1,"message":"The value of the parameter 'id' is required"}`
+
+If the transaction to process was already recorded so we can get the following message.
+
+`curl -v -d "{\"id\":19,\"customer\":\"Client-1\", \"purchaseAmount\": 100, \"purchaseDate\": \"12-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction` 
+
+`POST /pointsAppWS/transaction HTTP/1.1`\
+`Host: localhost:8080`\
+`User-Agent: curl/7.55.1`\
+`Accept: */*`\
+`Content-Type: application/json`\
+`Content-Length: 84`
+
+`* upload completely sent off: 84 out of 84 bytes`\
+`HTTP/1.1 400`\
+`Content-Type: application/json`\
+`Transfer-Encoding: chunked`\
+`Date: Sun, 28 Nov 2021 19:01:07 GMT`\
+`Connection: close`
+
+`{"status":400,"code":-8,"message":"The entered transaction already exist : 19"}`
+______ 
+**HTTP METHOD: GET** 
+**URL: /pointsAppWS/transactions**
+
+This endpoint is responsible of consulting the transactions that were already recorded. In case of no exist any transactions the service would return an error indicating it.
+
+In case of success would return a status **200**, and the list of transactions tha were recorded. If there is not any transaction recorded the WS would return a status **400**, a code **-9** and the message **"There are not transactions to process"**.
+
+Next, a case of getting a list of transactions.
+
+`curl -v http://localhost:8080/pointsAppWS/transactions`
+
+Response returned by the server.
+
+`GET /pointsAppWS/transactions HTTP/1.1`\
+`Host: localhost:8080`\
+`User-Agent: curl/7.55.1`\
+`Accept: */*`
+
+`HTTP/1.1 200`\
+`Content-Type: application/json`\
+`Transfer-Encoding: chunked`\
+`Date: Sun, 28 Nov 2021 19:23:55 GMT`
+
+`[{`\
+`  "id":"19",`\
+`  "customer":"Client-1",`\
+`  "purchaseAmount":100.0,`\
+`  "purchaseDate":"12-10-2021"`\
+`  },`\
+`  {`\
+`  "id":"9",`\
+`  "customer":"Client-1",`\
+`  "purchaseAmount":100.0,`\
+`  "purchaseDate":"12-10-2021"`\
+`  }]`
 
 ______  
 **HTTP METHOD: DELETE**
