@@ -1,6 +1,21 @@
 # Overactive
 Project aimed at developing a Rest WS to calculate rewarded points.
 
+# How to build the pointsAppWS Web Service
+It is a Java Maven project developed through the SprintBoot framework.
+
+To generate the service corresponding to the **WS pointsAppWS** it is only necessary to clone the repository through Git or any other client tool that Git supports.
+
+Like any maven project, once the repository has been cloned, it must be compiled and installed through the selected editor that supports maven, or through the command line, for example by executing the command: **mvn compile package** or **mvn install**.
+
+To run the unit tests, they were developed through JUnit. It is possible to run the unit tests through the **JUniTest** incorporated in the chosen editor, or through the command line: **mvn test**
+
+Once the .jar file corresponding to the **pointsAppWs** service has been generated, it will be available in the target directory.
+
+For its execution, it is only necessary to execute the snapshot version as a .jar application from the command line or through the same editor if it allows executing a springboot application. Once the .jar is executed, it will be executed by default in position **8080**; however, it is possible to specify another port.
+
+To consume the WS, it is only necessary to configure its different endpoints from any application or tool that allows consuming **Rest WS.**
+
 # Description
 The Web Service **pointsAppWS**, is a Rest WS that has the purpose of calculating the total points earned according to the amount of purchase that a customer has made.
 
