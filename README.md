@@ -200,7 +200,7 @@ Response received.
 `"purchaseDate":"12-10-2021"`\
 `}]`
 
-Here we can see the registered transaction. To update the current transaction, we will change the value of the parameters ** purchaseAmount ** and ** purchaseDate **, with the corresponding values ** 200 ** and ** "02-10-2021" ** respectively. The customer's name will remain the same.
+Here we can see the registered transaction. To update the current transaction, we will change the value of the parameters **purchaseAmount** and **purchaseDate**, with the corresponding values **200** and **"02-10-2021"** respectively. The customer's name will remain the same.
 
 `curl -X PUT  -d "{\"customer\":\"Client-2\", \"purchaseAmount\": 200, \"purchaseDate\": \"02-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction/20`
 
