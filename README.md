@@ -242,10 +242,94 @@ ______
 **HTTP METHOD: GET**   
 **URL: /pointsAppWS/points/month/{customer}**
 
-This endpoint is responsible of ...
+This endpoint is in charge of consulting the points earned and accumulated by the client grouped by month. In case the **{customer}** does not exist, the **WS** will return a message indicating that the **{customer}** queried does not exist.
+
+|STATUS                |CODE                          |MESSAGE                        |
+|----------------|-------------------------------|-----------------------------|
+|400|`-6`| The required customer does not exist| 
+
+`curl  http://localhost:8080/pointsAppWS/points/month/Client-3`
+
+Response received.
+
+`{`\
+`"status":400,`\
+`"code":-6,`\
+`"message":"The required customer does not exist : Client-3"`\
+`}`
+
+On success, it will return a **200 status** and the list of points earned grouped by month.
+
+`curl -v http://localhost:8080/pointsAppWS/points/month/Client-2`
+
+Response received.
+
+`GET /pointsAppWS/points/month/Client-2 HTTP/1.1`\
+`Host: localhost:8080`\
+`User-Agent: curl/7.55.1`\
+`Accept: */*`
+
+`HTTP/1.1 200`\
+`Content-Type: application/json`\
+`Transfer-Encoding: chunked`\
+`Date: Sun, 28 Nov 2021 21:57:38 GMT`
+
+`[{`\
+`"customer":"Client-2",`\
+`"points":[`\
+`	{`\
+`	"month":7,`\
+`	"points":100`\
+`	},`\
+`	{`\
+`	"month":9,`\
+`	"points":35`\
+`	},`\
+`	{`\
+`	"month":10,`\
+`	"points":250`\
+`	}`\
+`]}`
+
 ______
-**HTTP METHOD: GET**   
+**HTTP METHOD: GET**\
 **URL: /pointsAppWS/points/total/{customer}**
 
-This endpoint is responsible of ...
+This endpoint is in charge of consulting the total points earned and accumulated by the client. In case the **{customer}** does not exist, the **WS** will return a message indicating that the **{customer}** queried does not exist.
+
+|STATUS                |CODE                          |MESSAGE                        |
+|----------------|-------------------------------|-----------------------------|
+|400|`-6`| The required customer does not exist| 
+
+`curl  http://localhost:8080/pointsAppWS/points/total/Client-3`
+
+Response received.
+
+`{`\
+`"status":400,`\
+`"code":-6,`\
+`"message":"The required customer does not exist : Client-3"`\
+`}`
+
+On success, it will return a **200 status** and the total points earned.
+
+`curl -v http://localhost:8080/pointsAppWS/points/total/Client-2`
+
+Response received.
+
+`GET /pointsAppWS/points/total/Client-2 HTTP/1.1`\
+`Host: localhost:8080`\
+`User-Agent: curl/7.55.1`\
+`Accept: */*`
+
+`HTTP/1.1 200`\
+`Content-Type: application/json`\
+`Transfer-Encoding: chunked`\
+`Date: Sun, 28 Nov 2021 22:13:53 GMT`
+
+`{`\
+`"customer":"Client-2",`\
+`"points":385`\
+`}`
+
 
