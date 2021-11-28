@@ -117,8 +117,18 @@ public class TransactionServiceImpl implements TransactionService{
 
 	@Override
 	public Collection<Transaction> getTransactions() {
-		LOGGER.info("Getting transactions presents");
-		transactionRepo.values().forEach((p)->{LOGGER.debug(">" + p.toString());});
+		LOGGER.info("Getting transactions");
+		try {
+			if (transactionRepo.isEmpty()) {
+				LOGGER.debug("There're no transaction to process. The repository is empty.");
+				throw new TransactionNotFoundException (ErrorCodes.ERR_NOT_TRANSACTIONS.getDescription());
+			}else
+				transactionRepo.values().forEach((p)->{LOGGER.debug(">" + p.toString());});		
+		}catch (TransactionNotFoundException ex) {
+			throw ex;
+		}catch (Exception ex) {
+			LOGGER.error(ex.getMessage(), ex);
+		}		
 		return transactionRepo.values();
 	}
 	

@@ -34,5 +34,4 @@ public abstract class AbstractTest {
 	      
 	      return objectMapper.readValue(json, clazz);
 	   }
-	   
 }
