@@ -1,41 +1,42 @@
 # Overactive
-Project oriented to develop a Rest WS to calculate rewarded points.
+Project aimed at developing a Rest WS to calculate rewarded points.
 
 # Description
-The **pointsAppWS** Web Serrvice, is a Rest WS  that has as targer calculate the total of point acumulated according to the amount of puchase tha has commited by a customer. The total de points to calculate correspond to the....
-The WS offers different endpoints which could be consume by a client application as curl, SoapUI or Postman.   
-The format to send and receive is a Json format.
+The Web Service **pointsAppWS**, is a Rest WS that has the purpose of calculating the total points earned according to the amount of purchase that a customer has made.
 
+The **pointsAppWS** offers different endpoints that can be consumed by a client application such as curl, SoapUI or Postman.
+The format for sending and receiving is a Json format. 
 
 ## WS Rest endpoints 
-As it was mentioned above, this WS offers the different endpoints which could be consume from a client application as curl, SoapUI or Postman. It could be also consumed by any application capable of consumig a Rest WS, whitout taking account the programming lenguage in which the application was created. 
+As mentioned above, this WS offers the different endpoints that can be consumed from a client application like curl, SoapUI or Postman. It could also be consumed by any application capable of consuming a Rest WS, regardless of the programming language in which the application was created.
 
-The Urls available are the followings:
+The available URLs are as follows:
+
 |HTTP METHOD                |URL                          |DESCRIPTION                        |
 |----------------|-------------------------------|-----------------------------|
-|POST|`/pointsAppWS/transaction`            |Create a new transaction.           |
-|GET|`/pointsAppWS/transaction`            |Get a list the transaction recorded.           |
-|DELETE|`/pointsAppWS/transaction/{id}`            |Delete a transaction according to the id passed in the Urls path.           |
-|UPDATE|`/pointsAppWS/transaction/{id}`            |Update a transaction information according to the id passed in the Urls path.      |
-|GET|`/pointsAppWS/points/month/{customer}`            |Get a list of earned points accumaleted monthly by the customer.             |
-|GET|`/pointsAppWS/points/total/{customer}`            |Get total of earned points accumalated by the customer. 
+|POST|`/pointsAppWS/transaction`            |Creates a new transaction.           |
+|GET|`/pointsAppWS/transaction`            |Obtains a list the transaction recorded.           |
+|DELETE|`/pointsAppWS/transaction/{id}`            |Deletes a transaction according to the transaction id.           |
+|UPDATE|`/pointsAppWS/transaction/{id}`            |Updates a transaction according to the transaction id. |
+|GET|`/pointsAppWS/points/month/{customer}`            |Obtains a list of the points earned accumulated monthly by the client. |
+|GET|`/pointsAppWS/points/total/{customer}`            |Obtains the total of earned points accumulated by the customer. |
 
 Next section it will explain how to use these enpoints.
    
 ______ 
-**HTTP METHOD: POST**
+**HTTP METHOD: POST**\
 **URL: /pointsAppWS/transaction**
 
-This endpoint is responsible of creating a new transaction. 
+This endpoint is responsible for creating a new transaction. 
 
-The information to enter is in JSON format and the following parameters are mandatory:
+The information to be entered is in **Json** format and the following parameters are required:
 
 - **id :** Corresponds to the transaction id and receives an alphanumeric value.
 - **customer :** Corresponds to the customer name and receives an alphanumeric value.
 - **purchaseAmount :** Corresponds to the purchase amount and receives an numeric value.
-- **purchaseDate :** Corresponds to the purchase date and receives an formatted value with the structure ** "DD-MM-YYYY" **.
+- **purchaseDate :** Corresponds to the purchase date and receives an value formatted with the structure **"DD-MM-YYYY"**.
 
-In case of omitting any values or if the format of the value does not correspond to the expected values, it would return an error message indicating the source of the same. To all these cases will return a status **400**, and the error messages are the followings:
+In case of omitting a value or if the format of the value does not correspond to the expected values, it would return an error message indicating its origin. All these cases will be returned a **400** status, and the error messages are as follows:
 
 
 |PARAMETER                |CODE                          |MESSAGE                        |
@@ -45,13 +46,18 @@ In case of omitting any values or if the format of the value does not correspond
 | purchaseAmount        |`-3`|The value of the parameter 'purchaseAmount' is required.|
 |purchaseDate          |`-4`|The value of the parameter 'purchaseDate' is required.|
 
-In case of success would return a status **201**, a code **0** and the message **"The transaction was successfully created"**. If the transaction to record already exist, the WS would return a status **400**, a code **-8** and the message **"The entered transaction already exist"**.
+On success, it will return a status 201. If the transaction to be recorded already exists, the WS will return an error message.
 
-In order to consume the URL **/pointAppWs/transaction** we can use the **curl** application. In this case the Rest WS was deployed locally and listening by the default port **8080**.
+|STATUS                |CODE                          |MESSAGE                        |
+|----------------|-------------------------------|-----------------------------|
+|201|` 0`            |The transaction was successfully created   |
+|400|`-8`            |The entered transaction already exist   |
+
+To consume the URL **/pointAppWs/transaction** we can use the **curl** application. In this case, the Rest WS is running locally and listening on the default port **8080**.
 
 `curl -v -d "{\"id\":19,\"customer\":\"Client-1\", \"purchaseAmount\": 100, \"purchaseDate\": \"12-10-2021\"}"   -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction`
 
-The response of the before request is the following:
+The response to the above request is as follows:
 	   
 `POST /pointsAppWS/transaction HTTP/1.1`\
  `Host: localhost:8080`\
@@ -68,7 +74,7 @@ The response of the before request is the following:
 
 `{"status":201,"code":0,"message":"The transaction was successfully created"}`
 
-The following execution, the parameter **id** is missing so that a message error will be returned.
+In the next run, the **id** parameter is missing, so an error message will be returned.
 
 `curl -v -d "{\"customer\":\"Client-1\", \"purchaseAmount\": 100, \"purchaseDate\": \"12-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction`
 
@@ -88,7 +94,7 @@ The following execution, the parameter **id** is missing so that a message error
 
 `{"status":400,"code":-1,"message":"The value of the parameter 'id' is required"}`
 
-If the transaction to process was already recorded so we can get the following message.
+If the transaction to process was already registered then we can receive the following message.
 
 `curl -v -d "{\"id\":19,\"customer\":\"Client-1\", \"purchaseAmount\": 100, \"purchaseDate\": \"12-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction` 
 
@@ -108,18 +114,23 @@ If the transaction to process was already recorded so we can get the following m
 
 `{"status":400,"code":-8,"message":"The entered transaction already exist : 19"}`
 ______ 
-**HTTP METHOD: GET**
+**HTTP METHOD: GET**\
 **URL: /pointsAppWS/transactions**
 
-This endpoint is responsible of consulting the transactions that were already recorded. In case of no exist any transactions the service would return an error indicating it.
+This endpoint is in charge of consulting the transactions that have already been recorded. If there is no transaction, the service will return an error indicating it.
 
-In case of success would return a status **200**, and the list of transactions tha were recorded. If there is not any transaction recorded the WS would return a status **400**, a code **-9** and the message **"There are not transactions to process"**.
+On success, a **200** status and the list of transactions that were posted will be returned. If no transaction is recorded, WS will return an error message as shown in the table below.
 
-Next, a case of getting a list of transactions.
+|STATUS                |CODE                          |MESSAGE                        |
+|----------------|-------------------------------|-----------------------------|
+|400|`-9`            |There are not transactions to process.   |
+
+
+Getting a list of transactions.
 
 `curl -v http://localhost:8080/pointsAppWS/transactions`
 
-Response returned by the server.
+Response received.
 
 `GET /pointsAppWS/transactions HTTP/1.1`\
 `Host: localhost:8080`\
@@ -159,6 +170,12 @@ This endpoint is responsible for deleting an existing transaction according to t
 `}`
 
 In case of not having information, it would return an error message.
+
+
+|STATUS                |CODE                          |MESSAGE                        |
+|----------------|-------------------------------|-----------------------------|
+|400|`-7`            |The entered transaction does not exist.   |
+
 
 `curl -X DELETE http://localhost:8080/pointsAppWS/transaction/29`
 
