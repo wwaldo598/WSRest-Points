@@ -108,7 +108,7 @@ If the transaction to process was already recorded so we can get the following m
 
 `{"status":400,"code":-8,"message":"The entered transaction already exist : 19"}`
 ______ 
-**HTTP METHOD: GET** 
+**HTTP METHOD: GET**
 **URL: /pointsAppWS/transactions**
 
 This endpoint is responsible of consulting the transactions that were already recorded. In case of no exist any transactions the service would return an error indicating it.
@@ -145,18 +145,99 @@ Response returned by the server.
 `  }]`
 
 ______  
-**HTTP METHOD: DELETE**
+**HTTP METHOD: DELETE**\
 **URL: /pointsAppWS/transaction/{id}**
 
-This endpoint is responsible of deleting a existing transaction according to the transaction **{id}** indicated
-as parameter. If the transaction id exist would return the information in relation to the transaction consulted. In case of not having information would return an message error. 
+This endpoint is responsible for deleting an existing transaction according to the transaction value **{id}**. If the transaction id exists, the **WS** will return the information regarding the queried transaction.
+
+ `curl -X DELETE http://localhost:8080/pointsAppWS/transaction/19`
  
+`{`\
+`"status":200,`\
+`"code":0,`\
+`"message":"The transaction was successfully deleted"`\
+`}`
+
+In case of not having information, it would return an error message.
+
+`curl -X DELETE http://localhost:8080/pointsAppWS/transaction/29`
+
+`{`\
+`"status":400,`\
+`"code":-7,`\
+`"message":"The entered transaction does not exist : 29"`\
+`}`
 ______
-**HTTP METHOD: PUT**   
+**HTTP METHOD: PUT**\
 **URL: /pointsAppWS/transaction/{id}**
 
-This endpoint is responsible of consuming a new transaction.
+This endpoint is responsible for updating an existing transaction according to the transaction value **{id}**. If the transaction id exists, **WS** will update the information indicated in the request body.
 
+In the following scenario, the transaction will be updated with respect to id **20**, returning a status **200**, a code **0** and the message **"The transaction was updated successfully"** .
+
+First, we will create the transaction.
+
+`curl -v -d "{\"id\":20,\"customer\":\"Client-1\", \"purchaseAmount\": 100, \"purchaseDate\": \"12-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction`
+
+Response received.
+
+`{`\
+`"status":201,`\
+`"code":0,`\
+`"message":"The transaction was successfully created"`\
+`}`
+
+Now, we will get the list of transactions.
+
+`curl http://localhost:8080/pointsAppWS/transactions`
+
+Response received.
+
+`[{`\
+`"id":"20",`\
+`"customer":"Client-1",`\
+`"purchaseAmount":100.0,`\
+`"purchaseDate":"12-10-2021"`\
+`}]`
+
+Here we can see the registered transaction. To update the current transaction, we will change the value of the parameters ** purchaseAmount ** and ** purchaseDate **, with the corresponding values ** 200 ** and ** "02-10-2021" ** respectively. The customer's name will remain the same.
+
+`curl -X PUT  -d "{\"customer\":\"Client-2\", \"purchaseAmount\": 200, \"purchaseDate\": \"02-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction/20`
+
+Response received.
+
+`{`\
+`"status":200,`\
+`"code":0,`\
+`"message":"The transaction was successfully updated"`\
+`}`
+
+We get again the result and can see the new updated values.
+
+`curl http://localhost:8080/pointsAppWS/transactions`
+
+Response received.
+
+`[{`\
+`"id":"20",`\
+`"customer":"Client-2",`\
+`"purchaseAmount":200.0,`\
+`"purchaseDate":"02-10-2021"`\
+`}]`
+
+In case of not existing the transaction to update, the table will show the error message to return.
+ 
+|STATUS                |CODE                          |MESSAGE                        |
+|----------------|-------------------------------|-----------------------------|
+|400|`-7`            |The entered transaction does not exist.   
+
+`curl -X PUT -d "{\"customer\":\"Client-2\", \"purchaseAmount\": 200, \"purchaseDate\": \"02-10-2021\"}" -H "Content-Type: application/json" http://localhost:8080/pointsAppWS/transaction/22`
+
+`{`
+`"status":400,`
+`"code":-7,`
+`"message":"The entered transaction does not exist : 22"`
+`}`
 ______
 **HTTP METHOD: GET**   
 **URL: /pointsAppWS/points/month/{customer}**
