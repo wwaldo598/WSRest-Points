@@ -37,3 +37,5 @@ build/
 mvnw*
 *~
 *.log
+/logs/*
+/log/*
