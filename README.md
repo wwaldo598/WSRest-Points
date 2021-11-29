@@ -4,7 +4,7 @@ Project aimed at developing a Rest WS to calculate rewarded points.
 # How to build the pointsAppWS Web Service
 It is a Java Maven project developed through the SprintBoot framework.
 
-To generate the service corresponding to the **WS pointsAppWS** it is only necessary to clone the repository through Git or any other client tool that Git supports. The current branch corresponds to the DEVELOP branch to be able to develop or modify something. The MAIN branch should be used only when WS has been released. This version is still under development, however, the DEVELOP branch fulfills the purpose required by the test.
+To generate the service corresponding to the **WS pointsAppWS** it is only necessary to clone the repository through Git or any other client tool that Git supports. The current branch corresponds to the **DEVELOP** branch to be able to develop or modify something. The **MAIN** branch should be used only when WS has been released. This version is still under development, however, the **DEVELOP** branch fulfills the purpose required by the test.
 
 Like any maven project, once the repository has been cloned, it must be compiled and installed through the selected editor that supports maven, or through the command line, for example by executing the command: **mvn compile package** or **mvn install**.
 
