@@ -32,7 +32,7 @@ The available URLs are as follows:
 |HTTP METHOD                |URL                          |DESCRIPTION                        |
 |----------------|-------------------------------|-----------------------------|
 |POST|`/pointsAppWS/transaction`            |Creates a new transaction.           |
-|GET|`/pointsAppWS/transaction`            |Obtains a list the transaction recorded.           |
+|GET|`/pointsAppWS/transactions`            |Obtains a list the transaction recorded.           |
 |DELETE|`/pointsAppWS/transaction/{id}`            |Deletes a transaction according to the transaction id.           |
 |UPDATE|`/pointsAppWS/transaction/{id}`            |Updates a transaction according to the transaction id. |
 |GET|`/pointsAppWS/points/month/{customer}`            |Obtains a list of the points earned accumulated monthly by the client. |
