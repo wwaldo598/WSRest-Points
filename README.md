@@ -4,7 +4,7 @@ Project aimed at developing a Rest WS to calculate rewarded points.
 # How to build the pointsAppWS Web Service
 It is a Java Maven project developed through the SprintBoot framework.
 
-To generate the service corresponding to the **WS pointsAppWS** it is only necessary to clone the repository through Git or any other client tool that Git supports.
+To generate the service corresponding to the **WS pointsAppWS** it is only necessary to clone the repository through Git or any other client tool that Git supports. The current branch corresponds to the DEVELOP branch to be able to develop or modify something. The MAIN branch should be used only when WS has been released. This version is still under development, however, the DEVELOP branch fulfills the purpose required by the test.
 
 Like any maven project, once the repository has been cloned, it must be compiled and installed through the selected editor that supports maven, or through the command line, for example by executing the command: **mvn compile package** or **mvn install**.
 
@@ -14,7 +14,9 @@ Once the .jar file corresponding to the **pointsAppWs** service has been generat
 
 For its execution, it is only necessary to execute the snapshot version as a .jar application from the command line or through the same editor if it allows executing a springboot application. Once the .jar is executed, it will be executed by default in position **8080**; however, it is possible to specify another port.
 
-To consume the WS, it is only necessary to configure its different endpoints from any application or tool that allows consuming **Rest WS.**
+Once the WS is running, a log directory will be created in the directory where WS **pointsAppWs** is running. For this, the configured level is **INFO** and it will store the log traces according to this level; however, it is possible to set a different level in the **application.properties** file and recompile to generate a new .jar with a defined logging level. 
+
+To consume the WS, it is only necessary to configure its different endpoints and consume them all from any application or tool that allows consuming **Rest WS**. During the explanation on how to consume the different Urls the application **curl** is used to show how to make a request. About **curl**, its use is simple and it will be similar when using other tools such as **Postman**.
 
 # Description
 The Web Service **pointsAppWS**, is a Rest WS that has the purpose of calculating the total points earned according to the amount of purchase that a customer has made.
