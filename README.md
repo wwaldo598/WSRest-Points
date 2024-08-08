@@ -1,4 +1,4 @@
-# Overactive
+# WSRest-Points
 Project aimed at developing a Rest WS to calculate rewarded points.
 
 # How to build the pointsAppWS Web Service
